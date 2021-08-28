@@ -1,0 +1,732 @@
+using System;
+using System.Collections.Generic;
+
+namespace FirstProgram
+{
+    class Menu
+    {
+        static void Main()
+        {
+            while (true)
+            {
+                int menu_pick;
+
+                Console.Clear();
+                Console.WriteLine("What would you like to use:");
+                Console.WriteLine();
+                Console.WriteLine("1 - Calculator");
+                Console.WriteLine("2 - Guessing Game");
+                Console.WriteLine("3 - RockPaperScissors");
+                Console.WriteLine("4 - Crap");
+                Console.WriteLine("5 - TicTacToe");
+                Console.WriteLine("6 - Quit");
+                Console.WriteLine();
+
+                try
+                {
+                    menu_pick = Convert.ToInt32(Console.ReadLine());
+                    MainMenu(menu_pick);
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+
+                if (menu_pick <= 0 || menu_pick >= 7)
+                {
+                    {
+                        Console.WriteLine("Enter a valid number");
+                        Console.ReadKey();
+                        continue;
+                    }
+                }
+            }
+        }
+
+        static void MainMenu(int menu_pick)
+        {
+            int[] menu_list = new int[6] { 1, 2, 3, 4, 5, 6 };
+
+            if (menu_list[0] == menu_pick)
+                Calc();
+
+            else if (menu_list[1] == menu_pick)
+                GuessGame();
+
+            else if (menu_list[2] == menu_pick)
+                RockPaperScissors();
+
+            else if (menu_list[3] == menu_pick)
+                Craps();
+
+            else if (menu_list[4] == menu_pick)
+                TicTacToe();
+
+            else if (menu_list[5] == menu_pick)
+                Environment.Exit(0);
+        }
+
+        static void Craps()
+        {
+            while (true)
+            {
+                Console.Clear();
+
+                Random random_num = new Random();
+                int random_num_picked = random_num.Next(1, 7);
+                int random_num_picked_two = random_num.Next(1, 7);
+                int play_again = 1;
+                int leave_game = 0;
+
+                Console.WriteLine("First dice: {0}", random_num_picked);
+                Console.WriteLine("Second dice: {0}", random_num_picked_two);
+                int die_sum = random_num_picked + random_num_picked_two;
+                Console.WriteLine("The sum of the dice is: {0}", die_sum);
+
+                if (die_sum == 2 || die_sum == 3 || die_sum == 12)
+                {
+                    Console.WriteLine("You rolled: {0}", die_sum);
+                    Console.WriteLine("You lost!");
+                    Console.WriteLine();
+                }
+                else if (die_sum == 7 || die_sum == 11)
+                {
+                    Console.WriteLine("You rolled: {0}", die_sum);
+                    Console.WriteLine();
+                    Console.WriteLine("You won!");
+                }
+
+                Console.WriteLine("\nYou have entered 'The Point', press any key to roll again");
+                ThePoint(die_sum);
+
+
+                for (int i = 0; i < play_again; i++)
+                {
+                    Console.WriteLine("Do you want to keep playing? (y or n)");
+                    string y_or_n = Console.ReadLine();
+
+                    if (y_or_n == "y")
+                        break;
+                    else if (y_or_n == "n")
+                        leave_game = 1;
+                    else
+                    {
+                        Console.WriteLine("Try again");
+                        i--;
+                    }
+                }
+                if (leave_game == 1)
+                    break;
+            }
+        }
+        static void ThePoint(int point_sum)
+        {
+            while (true)
+            {
+                Console.Clear();
+
+                Random random_num = new Random();
+                int random_num_picked = random_num.Next(1, 7);
+                int random_num_picked_two = random_num.Next(1, 7);
+
+                Console.WriteLine("First dice: {0}", random_num_picked);
+                Console.WriteLine("Second dice: {0}", random_num_picked_two);
+                int die_sum = random_num_picked + random_num_picked_two;
+                Console.WriteLine("The sum of the dice is: {0}", die_sum);
+
+                if (die_sum == point_sum)
+                    Console.WriteLine("You won!");
+                else if (die_sum == 7)
+                    Console.WriteLine("You lost!");
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("You didn't roll a 7 or a {0}, press any key to roll again", point_sum);
+                    Console.ReadKey();
+                    continue;
+                }
+                break;
+            }
+        }
+        static void TicTacToe()
+        {
+            string[] grid = new string[9] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            int user_pick;
+
+            List<int> used_nums = new List<int>();
+
+            while (true)
+            {
+                Console.Clear();
+
+                TTTGrid(grid);
+
+                try
+                {
+                    Console.Write("Pick a number: ");
+                    user_pick = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+
+                bool already_guessed = false;
+
+                for (int i = 0; i < used_nums.Count; i++)
+                    if (user_pick == used_nums[i])
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("{0} has already been used...", used_nums[i]);
+                        Console.ReadKey();
+                        already_guessed = true;
+                        break;
+                    }
+                if (already_guessed)
+                    continue;
+
+                used_nums.Add(user_pick);
+
+                if (user_pick >= 1 && user_pick <= 9)
+                {
+                    TTTUserPick(user_pick, grid);
+                }
+                else
+                {
+                    Console.WriteLine("Enter a number between 1 and 9");
+                    Console.ReadKey();
+                    continue;
+                }
+
+
+                if (grid[0] == "x")
+                {
+                    if (grid[1] == "x" && grid[2] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[4] == "x" && grid[8] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[3] == "x" && grid[6] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[1] == "x")
+                {
+                    if (grid[4] == "x" && grid[7] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[2] == "x")
+                {
+                    if (grid[5] == "x" && grid[7] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[4] == "x" && grid[6] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[3] == "x")
+                {
+                    if (grid[4] == "x" && grid[5] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[6] == "x")
+                {
+                    if (grid[7] == "x" && grid[8] == "x")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You win");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                while (true)
+                {
+                    Random random = new Random();
+                    int bot_pick = random.Next(1, 10);
+
+                    TTTBotPick(bot_pick, grid);
+
+                    bool already_guessed_bot = false;
+
+                    for (int i = 0; i < used_nums.Count; i++)
+                        if (bot_pick == used_nums[i])
+                        {
+                            already_guessed_bot = true;
+                            break;
+                        }
+                    if (already_guessed_bot)
+                        continue;
+                    else
+                    {
+                        used_nums.Add(bot_pick);
+                        break;
+                    }
+                }
+
+
+                if (grid[0] == "o")
+                {
+                    if (grid[1] == "o" && grid[2] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[4] == "o" && grid[8] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[3] == "o" && grid[6] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[1] == "o")
+                {
+                    if (grid[4] == "o" && grid[7] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[2] == "o")
+                {
+                    if (grid[5] == "o" && grid[8] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                    if (grid[4] == "o" && grid[6] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[3] == "o")
+                {
+                    if (grid[4] == "o" && grid[5] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+
+                else if (grid[6] == "o")
+                {
+                    if (grid[7] == "o" && grid[8] == "o")
+                    {
+                        TTTGrid(grid);
+                        Console.WriteLine("You lose");
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+            }
+        }
+
+        static void TTTGrid(string[] grid)
+        {
+            Console.WriteLine("{0} | {1} | {2}", grid[0], grid[1], grid[2]);
+            Console.WriteLine("{0} | {1} | {2}", grid[3], grid[4], grid[5]);
+            Console.WriteLine("{0} | {1} | {2}", grid[6], grid[7], grid[8]);
+            Console.WriteLine();
+        }
+
+        static string TTTUserPick(int user_pick, string[] grid)
+        {
+            switch (user_pick)
+            {
+                case 1:
+                    return grid[0] = "x";
+                case 2:
+                    return grid[1] = "x";
+                case 3:
+                    return grid[2] = "x";
+                case 4:
+                    return grid[3] = "x";
+                case 5:
+                    return grid[4] = "x";
+                case 6:
+                    return grid[5] = "x";
+                case 7:
+                    return grid[6] = "x";
+                case 8:
+                    return grid[7] = "x";
+                case 9:
+                    return grid[8] = "x";
+                default:
+                    return "";
+            }
+        }
+
+        static string TTTBotPick(int bot_pick, string[] grid)
+        {
+            switch (bot_pick)
+            {
+                case 1:
+                    return grid[0] = "o";
+                case 2:
+                    return grid[1] = "o";
+                case 3:
+                    return grid[2] = "o";
+                case 4:
+                    return grid[3] = "o";
+                case 5:
+                    return grid[4] = "o";
+                case 6:
+                    return grid[5] = "o";
+                case 7:
+                    return grid[6] = "o";
+                case 8:
+                    return grid[7] = "o";
+                case 9:
+                    return grid[8] = "o";
+                default:
+                    return "";
+            }
+        }
+        static void RockPaperScissors()
+        {
+            while (true)
+            {
+                Console.Clear();
+
+                var random = new Random();
+                List<string> choices = new List<string>() { "rock", "paper", "scissors" };
+                int[] game_list = new int[3] { 1, 2, 3 };
+                int game_pick = random.Next(game_list.Length);
+                int user_pick;
+                int win_lose = 0;
+
+                while (true)
+                {
+                    try
+                    {
+                        Console.Write("Rock, paper, or scissors: \n1 - Rock\n2 - Paper\n3 - Scissors\n");
+                        user_pick = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine();
+                        break;
+                    }
+                    catch (Exception Ex)
+                    {
+                        Console.WriteLine(Ex);
+                        Console.ReadKey();
+                        Console.Clear();
+                        continue;
+                    }
+                }
+
+                if (user_pick >= 4 || user_pick <= 0)
+                {
+                    Console.WriteLine("Enter a valid number");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                if (user_pick == game_list[game_pick])
+                {
+                    Console.WriteLine("You both picked {0}", choices[user_pick - 1]);
+                    Console.WriteLine("Press any key to play again");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                if (game_pick == 0 && user_pick == 2)
+                    win_lose++;
+                else if (game_pick == 1 && user_pick == 3)
+                    win_lose++;
+                else if (game_pick == 2 && user_pick == 1)
+                    win_lose++;
+
+                if (win_lose == 1)
+                {
+                    Console.WriteLine("You won!");
+                    Console.WriteLine("The bot picked {0}", choices[game_pick]);
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine("You lost!");
+                    Console.WriteLine("The bot picked {0}", choices[game_pick]);
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("Press any key to return to the menu");
+                Console.ReadKey();
+                break;
+            }
+        }
+        static void GuessGame()
+        {
+            int guesses_remaining;
+            int guesses_total = 0;
+            int user_guess;
+            int first;
+            int second;
+
+            while (true)
+            {
+                try
+                {
+                    Console.Clear();
+                    Console.WriteLine("What range of numbers would you like to guess from?");
+                    Console.Write("First number: ");
+                    first = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("Second number: ");
+                    second = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+
+                    if (first >= second)
+                    {
+                        Console.WriteLine("Your second number must be greater than your first number, try again.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    break;
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+            }
+
+            Random random_num = new Random();
+            int random_num_picked = random_num.Next(first, second + 1);
+
+            List<int> used_nums = new List<int>();
+
+            while (true)
+            {
+                try
+                {
+                    Console.Write("How many guesses would you like: ");
+                    guesses_remaining = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine();
+                    break;
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+            }
+
+            Console.WriteLine("Guess the number between {0} and {1}", first, second);
+            Console.WriteLine();
+
+            while (true)
+            {
+                if (guesses_remaining <= 0)
+                {
+                    Console.WriteLine("You lost!");
+                    break;
+                }
+
+                if (used_nums.Count > 0)
+                {
+                    Console.Write("Used numbers: ");
+
+                    foreach (int num in used_nums)
+                        Console.Write("{0} ", num);
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("{0} guesses remaining", guesses_remaining);
+
+                while (true)
+                {
+                    try
+                    {
+                        Console.Write("Enter a number: ");
+                        user_guess = Convert.ToInt32(Console.ReadLine());
+                        break;
+                    }
+                    catch (Exception Ex)
+                    {
+                        Console.WriteLine(Ex);
+                        Console.ReadKey();
+                        Console.Clear();
+                        continue;
+                    }
+                }
+
+                if (used_nums.Count > 0)
+                {
+                    bool already_guessed = false;
+
+                    for (int i = 0; i < used_nums.Count; i++)
+                        if (user_guess == used_nums[i])
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("You've already guessed {0}", used_nums[i]);
+                            Console.WriteLine();
+                            already_guessed = true;
+                            break;
+                        }
+                    if (already_guessed)
+                        continue;
+                }
+
+                if (user_guess > first && user_guess < second)
+                    used_nums.Add(user_guess);
+
+                Console.WriteLine();
+
+                if (user_guess < first || user_guess > second)
+                {
+                    Console.WriteLine("Enter a valid number");
+                    Console.WriteLine();
+                    continue;
+                }
+                else if (user_guess == random_num_picked)
+                {
+                    guesses_total++;
+                    Console.WriteLine("You won!");
+                    Console.WriteLine("Total guesses: {0}", guesses_total);
+                    break;
+                }
+                else if (user_guess > random_num_picked)
+                {
+                    Console.WriteLine("Your guess was too high");
+                    Console.WriteLine();
+                    guesses_total++;
+                    guesses_remaining--;
+                    continue;
+                }
+                else if (user_guess < random_num_picked)
+                {
+                    Console.WriteLine("Your guess was too low");
+                    Console.WriteLine();
+                    guesses_total++;
+                    guesses_remaining--;
+                    continue;
+                }
+            }
+            Console.WriteLine("The correct number was {0}", random_num_picked);
+            Console.WriteLine();
+            Console.WriteLine("Press any key to return to the menu");
+            Console.ReadKey();
+        }
+        static void Calc()
+        {
+            while (true)
+            {
+                Console.Clear();
+                double answer;
+
+                try
+                {
+                    Console.Write("Would you like to...\n1 - Add\n2 - Multiply\n3 - Subtract\n4 - Divide\n");
+                    int user_operator = Convert.ToInt32(Console.ReadLine());
+
+                    Console.Write("First number: ");
+                    double first_num = Convert.ToDouble(Console.ReadLine());
+                    Console.Write("Second number: ");
+                    double second_num = Convert.ToDouble(Console.ReadLine());
+
+                    answer = CalcMath(first_num, second_num, user_operator);
+                }
+                catch (Exception Ex)
+                {
+                    Console.WriteLine(Ex);
+                    Console.ReadKey();
+                    Console.Clear();
+                    continue;
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Answer: {0}", answer);
+
+                Console.WriteLine();
+                Console.WriteLine("Press any key to return to the menu");
+                Console.ReadKey();
+                break;
+            }
+        }
+
+        static double CalcMath(double first_num, double second_num, int user_operator)
+        {
+            switch (user_operator)
+            {
+                case 1:
+                    return first_num += second_num;
+                case 2:
+                    return first_num *= second_num;
+                case 3:
+                    return first_num -= second_num;
+                case 4:
+                    return first_num /= second_num;
+                default:
+                    return 0;
+            }
+        }
+    }
+}
